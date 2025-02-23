@@ -8,9 +8,13 @@ This project aims to develop an advanced recommender system that predicts climat
 🚀 Features
 
 ✔ Historical Temperature Trends – Retrieves and analyzes past temperature data.
+
 ✔ Natural Disaster Predictions – Assesses the likelihood of disasters based on past trends.
+
 ✔ CO₂ Emission Insights – Evaluates environmental impact and emissions correlation.
+
 ✔ Interactive Visualizations – Provides graphs and maps for easy interpretation.
+
 ✔ User-Specific Recommendations – Personalized predictions based on input year and location.
 
 📊 Data Sources
