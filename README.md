@@ -30,3 +30,19 @@ Annual Precipitation Data (1940-2024) – OurWorldInData
 Deforestation & Forest Loss Data – OurWorldInData
 
 Natural Disaster & Emergency Events Database – Omdena
+
+🛠️ Technology Stack
+
+Programming Language:
+
+Python 🐍
+
+Libraries & Frameworks:
+
+Data Handling – Pandas, NumPy
+
+Visualization – Matplotlib, Seaborn
+
+Machine Learning – Scikit-Learn, TensorFlow
+
+Geospatial Analysis – Geopandas, Folium
