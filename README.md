@@ -1,11 +1,11 @@
 # cap5771sp25-project
 Climate and Disaster Prediction Recommender System
 
-📌### **Project Overview**
+📌 **Project Overview**
 
 This project aims to develop an advanced recommender system that predicts climate temperature trends and assesses potential natural disasters based on the user-specified year and location (country). By leveraging historical data and predictive modeling, the system will provide valuable insights into environmental risks, enabling users to make informed decisions. This tool will be a crucial resource for climate analysis, disaster preparedness, and risk mitigation strategies.
 
-🚀 ###**Features**
+🚀 **Features**
 
 ✔ Historical Temperature Trends – Retrieves and analyzes past temperature data.
 
@@ -17,7 +17,7 @@ This project aims to develop an advanced recommender system that predicts climat
 
 ✔ User-Specific Recommendations – Personalized predictions based on input year and location.
 
-📊 ###**Data Sources**
+📊 **Data Sources**
 
 The system uses multiple datasets collected from reputable sources:
 
@@ -31,7 +31,7 @@ Deforestation & Forest Loss Data – OurWorldInData
 
 Natural Disaster & Emergency Events Database – Omdena
 
-🛠️ ###**Technology Stack**
+🛠️ **Technology Stack**
 
 Programming Language:
 
