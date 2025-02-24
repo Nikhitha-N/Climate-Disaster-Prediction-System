@@ -77,7 +77,7 @@ Geospatial Analysis – Geopandas, Folium
 
 
 ## Contributors
-- **[Nikhitha Nagalla]** - [GitHub Profile]([https://github.com/<your-username>](https://github.com/Nikhitha-N))
+- **Nikhitha Nagalla**
 
 For any inquiries, feel free to open an issue on GitHub!
 
