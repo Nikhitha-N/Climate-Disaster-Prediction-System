@@ -48,24 +48,13 @@ Machine Learning – Scikit-Learn, TensorFlow
 Geospatial Analysis – Geopandas, Folium
 
 🏗️ Project Structure
-
-📂 cap5771sp25-project
- ├── 📂 Data
- │   ├── global_temperatures.csv
- │   ├── co2_emissions.csv
- │   ├── precipitation_data.csv
- │   ├── forest_loss.csv
- │   ├── disasters.csv
- │
- ├── 📂 Scripts
- │   ├── eda.ipynb  <-- EDA Analysis Notebook
- │   ├── cleaning_utils
- |   ├── descriptive_utils
- │
- ├── 📂 Reports
- │   ├── Milestone1.pdf  <-- Detailed Report
- │
- ├── README.md  <-- This File
+```
+|-- cap5771sp25-project
+    |-- Data/                 # Raw datasets
+    |-- Scripts/            # Jupyter Notebooks for analysis
+    |-- Reports/              # Milestone reports
+    |-- README.md             # Project documentation
+```
 
  ## Key Insights
  - Rising Global Temperatures – Consistent warming with extreme fluctuations.
