@@ -46,3 +46,49 @@ Visualization – Matplotlib, Seaborn
 Machine Learning – Scikit-Learn, TensorFlow
 
 Geospatial Analysis – Geopandas, Folium
+
+🏗️ Project Structure
+
+📂 cap5771sp25-project
+ ├── 📂 Data
+ │   ├── global_temperatures.csv
+ │   ├── co2_emissions.csv
+ │   ├── precipitation_data.csv
+ │   ├── forest_loss.csv
+ │   ├── disasters.csv
+ │
+ ├── 📂 Scripts
+ │   ├── eda.ipynb  <-- EDA Analysis Notebook
+ │   ├── cleaning_utils
+ |   ├── descriptive_utils
+ │
+ ├── 📂 Reports
+ │   ├── Milestone1.pdf  <-- Detailed Report
+ │
+ ├── README.md  <-- This File
+
+ ## Key Insights
+ - Rising Global Temperatures – Consistent warming with extreme fluctuations.
+ - CO₂-Climate Link – High emissions drive temperature increases.
+ - More Frequent Disasters – Climate-related disasters are rising.
+ - High-Risk Regions – Coastal and developing areas are most vulnerable.
+
+ 
+## Accessing the GitHub Repository
+1. Go to the **GitHub repository**:
+   ```
+   [https://github.com/<your-username>/music-recommendation-system](https://github.com/Nikhitha-N/cap5771sp25-project)
+   ```
+2. Clone the repository:
+   ```bash
+   [git clone https://github.com/<your-username>/music-recommendation-system.git](https://github.com/Nikhitha-N/cap5771sp25-project.git)
+   ```
+3. Navigate to the project directory
+4. Run the ipynb Notebook for analysis in jupyter notebook and vs code
+
+
+## Contributors
+- **[Nikhitha Nagalla]** - [GitHub Profile]([https://github.com/<your-username>](https://github.com/Nikhitha-N))
+
+For any inquiries, feel free to open an issue on GitHub!
+
