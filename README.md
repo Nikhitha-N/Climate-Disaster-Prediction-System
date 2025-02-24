@@ -66,11 +66,11 @@ Geospatial Analysis – Geopandas, Folium
 ## Accessing the GitHub Repository
 1. Go to the **GitHub repository**:
    ```
-   https://github.com/<your-username>/music-recommendation-system
+   https://github.com/Nikhitha-N/cap5771sp25-project
    ```
 2. Clone the repository:
    ```bash
-   git clone https://github.com/<your-username>/music-recommendation-system.git
+   git clone https://github.com/Nikhitha-N/cap5771sp25-project.git
    ```
 3. Navigate to the project directory
 4. Run the ipynb Notebook for analysis in jupyter notebook and vs code
