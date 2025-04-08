@@ -62,6 +62,27 @@ Geospatial Analysis – Geopandas, Folium
  - More Frequent Disasters – Climate-related disasters are rising.
  - High-Risk Regions – Coastal and developing areas are most vulnerable.
 
+## Models Implemented
+**Classification Task**
+Objective: predicting the severity of disaster impact for a given country-year-disaster combination.
+
+Models Implemented
+
+- Random Forest
+- MLP - Neural Network
+- XGBoost 
+
+**Regression Task**
+Objective: Forecasting future climate indicators like temperature, co2 emissions and precipitation based on country and year.
+
+Models Implemented
+
+- Random Forest Regression
+- LSTM
+- XGBoost
+
+
+
  
 ## Accessing the GitHub Repository
 1. Go to the **GitHub repository**:
