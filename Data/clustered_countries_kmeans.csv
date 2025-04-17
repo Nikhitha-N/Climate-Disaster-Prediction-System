@@ -1,0 +1,32 @@
+Country,Disaster_Cluster,Cluster_Label
+Peru,0,Low Disaster Activity
+Chile,0,Low Disaster Activity
+Mexico,0,Low Disaster Activity
+Egypt,0,Low Disaster Activity
+Brazil,1,Flood & Storm Dominant
+Afghanistan,2,Moderate Disaster Profile
+Thailand,2,Moderate Disaster Profile
+Spain,2,Moderate Disaster Profile
+Somalia,2,Moderate Disaster Profile
+Kenya,2,Moderate Disaster Profile
+Japan,2,Moderate Disaster Profile
+Italy,2,Moderate Disaster Profile
+Ukraine,2,Moderate Disaster Profile
+Iraq,2,Moderate Disaster Profile
+Zimbabwe,2,Moderate Disaster Profile
+Germany,2,Moderate Disaster Profile
+France,2,Moderate Disaster Profile
+Angola,2,Moderate Disaster Profile
+Bangladesh,2,Moderate Disaster Profile
+India,3,Earthquake Prone
+China,4,Volcanic Countries
+Pakistan,5,Wildfire & Heat Prone
+Canada,6,Floods & Droughts Mix
+South Africa,6,Floods & Droughts Mix
+Australia,6,Floods & Droughts Mix
+Indonesia,7,Minimal Disasters
+Colombia,8,Flood-Drought-Earthquake Mix
+Morocco,9,Balanced Moderate Activity
+Senegal,9,Balanced Moderate Activity
+Ethiopia,9,Balanced Moderate Activity
+Nigeria,9,Balanced Moderate Activity
