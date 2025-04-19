@@ -32,11 +32,12 @@ def plot_temperature_distribution(df):
     st.pyplot(plt.gcf())
     plt.clf()
 
-def plot_global_temperature_map(df, year):
-    import matplotlib.pyplot as plt
-    from mpl_toolkits.basemap import Basemap
+import streamlit as st
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
+import pandas as pd
 
-    # Ensure datetime format
+def plot_global_temperature_map(df, year):
     df['dt'] = pd.to_datetime(df['dt'], errors='coerce')
     df_year = df[df['dt'].dt.year == year]
 
@@ -49,18 +50,70 @@ def plot_global_temperature_map(df, year):
     m.drawcoastlines()
     m.drawcountries()
 
-    # Convert coordinates to map projection
     x, y = m(df_year["Longitude"].values, df_year["Latitude"].values)
 
-    # Plot temperature points
     sc = ax.scatter(x, y, c=df_year["AverageTemperature"], cmap="coolwarm", alpha=0.7)
-
     plt.colorbar(sc, label="Avg Temperature (°C)")
     plt.title(f"Global Temperature Distribution - {year}")
     plt.tight_layout()
-    plt.show()
 
+    #  Show in Streamlit
+    st.pyplot(fig)
 
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+import streamlit as st
+
+def plot_top_10_hottest_countries(df):
+    # Compute the highest temperature recorded for each country
+    df_country_max = df.groupby('Country', as_index=False)['AverageTemperature'].max()
+
+    # Get the top 10 countries
+    top_10 = df_country_max.nlargest(10, 'AverageTemperature')
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(12, 6))
+    sns.barplot(data=top_10, x='Country', y='AverageTemperature', palette='Reds_r', ax=ax)
+
+    # Annotate each bar
+    for p in ax.patches:
+        ax.annotate(f"{p.get_height():.2f}",
+                    (p.get_x() + p.get_width() / 2, p.get_height()),
+                    ha='center', va='bottom', fontsize=12, fontweight='bold', color='black')
+
+    ax.set_xlabel("Country", fontsize=12, fontweight='bold')
+    ax.set_ylabel("Highest Recorded Temperature (°C)", fontsize=12, fontweight='bold')
+    ax.set_title("Top 10 Countries with Highest Recorded Temperatures (All Time)", fontsize=14, fontweight='bold')
+    ax.tick_params(axis='x', rotation=45)
+    plt.tight_layout()
+
+    # Display in Streamlit
+    st.pyplot(fig)
+
+def plot_us_temperature_trend(df):
+    # Filter for United States
+    df_us = df[df['Country'] == 'United States'].copy()
+
+    # Ensure datetime format and extract year
+    df_us['dt'] = pd.to_datetime(df_us['dt'], errors='coerce')
+    df_us['Year'] = df_us['dt'].dt.year
+
+    # Group and compute yearly average temperature
+    df_us_mean = df_us.groupby('Year', as_index=False)['AverageTemperature'].mean()
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.plot(df_us_mean['Year'], df_us_mean['AverageTemperature'], marker='o', linestyle='-', color='b')
+
+    ax.set_xlabel("Year", fontsize=12, fontweight='bold')
+    ax.set_ylabel("Average Temperature (°C)", fontsize=12, fontweight='bold')
+    ax.set_title("Temperature Trend in the United States Over Time", fontsize=14, fontweight='bold')
+    ax.grid(True)
+
+    st.pyplot(fig)
 
 
 def plot_correlation_heatmap(df):
@@ -79,4 +132,79 @@ def plot_temp_co2_trend(df):
     plt.ylabel("Value")
     plt.grid(True)
     st.pyplot(plt)
+
+def plot_numerical_feature_distributions(df):
+    features = [
+        "AvgTemp_Year", "Annual CO₂ emissions (per capita)", "Annual precipitation",
+        "Total Events", "Total Affected", "Total Deaths",
+        "Total Damage (USD, adjusted)", "CPI"
+    ]
+
+    fig, axes = plt.subplots(3, 3, figsize=(16, 12))
+    axes = axes.flatten()
+
+    for i, col in enumerate(features):
+        if col in df.columns:
+            sns.histplot(df[col].dropna(), kde=True, bins=30, ax=axes[i])
+            axes[i].set_title(f"Distribution of {col}")
+        else:
+            axes[i].set_visible(False)
+
+    plt.tight_layout()
+    st.pyplot(fig)
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
+
+def plot_disaster_type_vs_total_affected(df):
+    if "Disaster Type" in df.columns and "Total Affected" in df.columns:
+        plt.figure(figsize=(12, 6))
+        sns.boxplot(data=df, x="Disaster Type", y="Total Affected")
+        plt.xticks(rotation=45)
+        plt.title("Disaster Type vs Total Affected (log scale)")
+        plt.yscale("log")
+        plt.tight_layout()
+        st.pyplot(plt.gcf())  # Display the current figure in Streamlit
+    else:
+        st.warning("Required columns 'Disaster Type' or 'Total Affected' not found in the dataset.")
+
+def plot_disaster_event_heatmap(df):
+    if all(col in df.columns for col in ["Country", "Disaster Type", "Total Events"]):
+        pivot = df.pivot_table(index="Country", columns="Disaster Type",
+                               values="Total Events", aggfunc="sum", fill_value=0)
+
+        plt.figure(figsize=(14, 8))
+        sns.heatmap(pivot, cmap="YlGnBu", linewidths=0.5)
+        plt.title("Disaster Event Count per Country")
+        plt.tight_layout()
+        st.pyplot(plt.gcf())  # Display the current figure in Streamlit
+    else:
+        st.warning("Required columns 'Country', 'Disaster Type', or 'Total Events' are missing in the DataFrame.")
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
+
+def plot_co2_vs_temperature(df):
+    required_cols = ["Annual CO₂ emissions (per capita)", "AvgTemp_Year", "Country"]
+    if all(col in df.columns for col in required_cols):
+        plt.figure(figsize=(8, 6))
+        sns.scatterplot(data=df,
+                        x="Annual CO₂ emissions (per capita)",
+                        y="AvgTemp_Year",
+                        hue="Country",
+                        alpha=0.7,
+                        legend=False)
+        plt.title("CO₂ Emissions vs Avg Temperature")
+        plt.xlabel("CO₂ Emissions (per capita)")
+        plt.ylabel("Avg Temperature (°C)")
+        plt.grid(True)
+        plt.tight_layout()
+        st.pyplot(plt.gcf())
+    else:
+        st.warning("Required columns missing: 'Annual CO₂ emissions (per capita)', 'AvgTemp_Year', or 'Country'.")
+
+
+
 
