@@ -63,9 +63,7 @@ def plot_global_temperature_map(df, year):
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-import seaborn as sns
-import matplotlib.pyplot as plt
-import streamlit as st
+
 
 def plot_top_10_hottest_countries(df):
     # Compute the highest temperature recorded for each country
@@ -204,6 +202,87 @@ def plot_co2_vs_temperature(df):
         st.pyplot(plt.gcf())
     else:
         st.warning("Required columns missing: 'Annual CO₂ emissions (per capita)', 'AvgTemp_Year', or 'Country'.")
+
+# Disaster visualizations
+def plot_disaster_damage_trend(df):
+    if "Year" in df.columns and "Total Damage (USD, adjusted)" in df.columns:
+        plt.figure(figsize=(12, 6))
+        sns.lineplot(data=df, x="Year", y="Total Damage (USD, adjusted)", marker="o", color="r")
+
+        plt.xlabel("Year", fontsize=12, fontweight='bold')
+        plt.ylabel("Total Damage (USD, Adjusted)", fontsize=12, fontweight='bold')
+        plt.title("Total Disaster Damage Over Time", fontsize=14, fontweight='bold')
+        plt.grid(True)
+        st.pyplot(plt.gcf())
+    else:
+        st.warning("Required columns 'Year' and 'Total Damage (USD, adjusted)' not found in the dataset.")
+
+def plot_top_affected_countries(df):
+    if "Country" in df.columns and "Total Affected" in df.columns:
+        top_affected = df.groupby("Country")["Total Affected"].sum().nlargest(10)
+
+        plt.figure(figsize=(12, 6))
+        sns.barplot(x=top_affected.values, y=top_affected.index, palette="Reds_r")
+
+        plt.xlabel("Total People Affected", fontsize=12, fontweight='bold')
+        plt.ylabel("Country", fontsize=12, fontweight='bold')
+        plt.title("Top 10 Countries with Most Affected People", fontsize=14, fontweight='bold')
+
+        # Annotate values
+        for index, value in enumerate(top_affected.values):
+            plt.text(value, index, f"{int(value):,}", ha="left", va="center", fontsize=10, fontweight="bold")
+
+        st.pyplot(plt.gcf())
+    else:
+        st.warning("Required columns 'Country' and 'Total Affected' not found in the dataset.")
+
+## co2 emission
+def plot_global_precipitation_trend(df):
+    if "Year" in df.columns and "Annual precipitation" in df.columns:
+        # Aggregate
+        global_precip = df.groupby("Year", as_index=False)["Annual precipitation"].mean()
+
+        # Plot
+        plt.figure(figsize=(12, 6))
+        sns.lineplot(data=global_precip, x="Year", y="Annual precipitation", marker="o", color="b")
+        plt.xlabel("Year", fontsize=12, fontweight='bold')
+        plt.ylabel("Global Avg Precipitation (mm)", fontsize=12, fontweight='bold')
+        plt.title("Global Precipitation Over Time", fontsize=14, fontweight='bold')
+        plt.grid(True)
+
+        # Display with Streamlit
+        st.pyplot(plt.gcf())
+    else:
+        st.warning("Required columns 'Year' and 'Annual precipitation' not found in the dataset.")
+
+def plot_top_precip_countries(df):
+    if "Entity" in df.columns and "Annual precipitation" in df.columns:
+        # Compute mean precipitation
+        top_countries = df.groupby("Entity", as_index=False)["Annual precipitation"].mean()
+        top_10 = top_countries.nlargest(10, "Annual precipitation")
+
+        # Plot
+        plt.figure(figsize=(12, 6))
+        ax = sns.barplot(data=top_10, x="Annual precipitation", y="Entity", palette="Blues_r")
+
+        # Annotate values
+        for p in ax.patches:
+            ax.annotate(f"{p.get_width():.2f}", 
+                        (p.get_width(), p.get_y() + p.get_height()/2),
+                        ha='left', va='center', fontsize=12, fontweight='bold', color='black')
+
+        # Labels
+        plt.xlabel("Avg Annual Precipitation (mm)", fontsize=12, fontweight='bold')
+        plt.ylabel("Country", fontsize=12, fontweight='bold')
+        plt.title("Top 10 Countries with Highest Precipitation", fontsize=14, fontweight='bold')
+        plt.tight_layout()
+
+        # Show in Streamlit
+        st.pyplot(plt.gcf())
+    else:
+        st.warning("Required columns 'Entity' and 'Annual precipitation' not found in the dataset.")
+
+
 
 
 
