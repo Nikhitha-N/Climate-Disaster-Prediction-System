@@ -4,13 +4,36 @@ import pandas as pd
 from visualizations import plot_disaster_type_vs_total_affected, plot_disaster_event_heatmap,plot_co2_vs_temperature, plot_disaster_damage_trend,plot_top_affected_countries
 from visualizations import  plot_global_precipitation_trend, plot_top_precip_countries
 import plotly.express as px
+import joblib
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
+
+def convert_lat_lon(value):
+    try:
+        if isinstance(value, str):
+            if value[-1] in ['S', 'W']:
+                return -float(value[:-1])
+            else:
+                return float(value[:-1])
+        return float(value)
+    except:
+        return None
+    
+merged_df=pd.read_csv("../Data/merged_df.csv")
+
+# Convert coordinates
+merged_df["Latitude_clean"] = merged_df["Latitude"].apply(convert_lat_lon)
+merged_df["Longitude_clean"] = merged_df["Longitude"].apply(convert_lat_lon)
+
+
 
 # Sidebar for navigation
 st.sidebar.title("📊 Dashboard Navigation")
 selected_option = st.sidebar.selectbox(
     "Choose a section:",
     ["Overview", "Temperature Trends", "Correlations and Distributions", "Disasters, Precipitation & CO₂ Trends",
-     "Clustering Results","Model Results"]
+     "Clustering Results","Model Results","Climate Forecasting"]
 )
 df = pd.read_csv("../Data/merged_df.csv")
 df1 = pd.read_csv("../Data/df1.csv")
@@ -152,6 +175,36 @@ elif selected_option == "Model Results":
     # Show best
     best_cls_model = cls_comp.sort_values("F1 Score", ascending=False).iloc[0]["Model"]
     st.success(f"✅ Best Performing Classification Model: **{best_cls_model}**")
+
+elif selected_option == "Climate Forecasting":
+    st.subheader("📈 Climate Forecasting")
+
+    # Dropdown for country and year
+    country = st.selectbox("🌍 Select Country", sorted(df["Country"].unique()))
+    year = st.slider("📅 Select Year", min_value=2023, max_value=2035, value=2025)
+
+    if st.button("🔮 Generate Forecast"):
+        try:
+            # Load the model and label encoder
+            import joblib
+            xgb_model = joblib.load("../Scripts/models/XGBoost.pkl")
+            label_encoder = joblib.load("../Scripts/models/country_label_encoder.pkl")
+
+            # Encode country
+            encoded_country = label_encoder.transform([country])[0]
+            input_data = pd.DataFrame([[encoded_country, year]], columns=["Country_encoded", "Year"])
+
+            # Predict
+            prediction = xgb_model.predict(input_data)[0]
+
+            # Display the results
+            st.success(f"🌍 **Forecast for {country} in {year}:**")
+            st.write(f"🌡️ **Average Temperature:** {round(prediction[0], 2)} °C")
+            st.write(f"💨 **CO₂ Emissions (per capita):** {round(prediction[1], 2)}")
+            st.write(f"🌧️ **Annual Precipitation:** {round(prediction[2], 2)} mm")
+
+        except Exception as e:
+            st.error(f"⚠️ Could not generate forecast: {e}")
 
 else:
     st.write("Welcome to the Climate & Disaster Impact Dashboard!")
