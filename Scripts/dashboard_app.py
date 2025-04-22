@@ -10,7 +10,7 @@ st.sidebar.title("📊 Dashboard Navigation")
 selected_option = st.sidebar.selectbox(
     "Choose a section:",
     ["Overview", "Temperature Trends", "Correlations and Distributions", "Disasters, Precipitation & CO₂ Trends",
-     "Clustering Results"]
+     "Clustering Results","Model Results"]
 )
 df = pd.read_csv("../Data/merged_df.csv")
 df1 = pd.read_csv("../Data/df1.csv")
@@ -94,6 +94,64 @@ elif selected_option == "Clustering Results":
     )
     fig_map.update_layout(legend_title_text="Cluster Label")
     st.plotly_chart(fig_map, use_container_width=True)
+
+elif selected_option == "Model Results":
+    st.title("📈 Model Performance Comparison")
+
+    # Load results
+    reg_df = pd.read_csv("../Data/results/Regression_results.csv")
+    cls_df = pd.read_csv("../Data/results/classification_results.csv")
+
+    ######################
+    # 🔢 Regression Block
+    ######################
+    st.subheader("🔢 Regression Model Comparison")
+
+    # Select target
+    reg_target = st.selectbox("Select Target Variable", reg_df["Target"].unique(), key="reg_target")
+
+    # Filter based on target
+    reg_filtered = reg_df[reg_df["Target"] == reg_target]
+
+    # Choose two models
+    reg_models = reg_filtered["Model"].unique().tolist()
+    reg_model1 = st.selectbox("Select First Regression Model", reg_models, key="reg_model1")
+    reg_model2 = st.selectbox("Select Second Regression Model", [m for m in reg_models if m != reg_model1], key="reg_model2")
+    
+
+    reg_comp = reg_filtered[reg_filtered["Model"].isin([reg_model1, reg_model2])]
+
+    # Plot
+    st.markdown("#### 📊 Comparison of Metrics")
+    reg_melted = reg_comp.melt(id_vars="Model", value_vars=["MAE", "RMSE", "R2 Score"], var_name="Metric", value_name="Value")
+    fig_reg = px.bar(reg_melted, x="Metric", y="Value", color="Model", barmode="group", title=f"{reg_target} - Model Comparison")
+    st.plotly_chart(fig_reg, use_container_width=True)
+
+    # Show best
+    best_model = reg_comp.sort_values("R2 Score", ascending=False).iloc[0]["Model"]
+    st.success(f"✅ Best Performing Regression Model for **{reg_target}**: **{best_model}**")
+
+    ######################
+    # 🧮 Classification Block
+    ######################
+    st.subheader("🧮 Classification Model Comparison")
+
+    # Choose two classification models
+    cls_models = cls_df["Model"].unique().tolist()
+    cls_model1 = st.selectbox("Select First Classification Model", cls_models, key="cls_model1")
+    cls_model2 = st.selectbox("Select Second Classification Model", [m for m in cls_models if m != cls_model1], key="cls_model2")
+
+    cls_comp = cls_df[cls_df["Model"].isin([cls_model1, cls_model2])]
+
+    # Plot
+    st.markdown("#### 📊 Comparison of Metrics")
+    cls_melted = cls_comp.melt(id_vars="Model", value_vars=["Accuracy", "Precision", "Recall", "F1 Score"], var_name="Metric", value_name="Value")
+    fig_cls = px.bar(cls_melted, x="Metric", y="Value", color="Model", barmode="group", title="Classification Model Comparison")
+    st.plotly_chart(fig_cls, use_container_width=True)
+
+    # Show best
+    best_cls_model = cls_comp.sort_values("F1 Score", ascending=False).iloc[0]["Model"]
+    st.success(f"✅ Best Performing Classification Model: **{best_cls_model}**")
 
 else:
     st.write("Welcome to the Climate & Disaster Impact Dashboard!")
