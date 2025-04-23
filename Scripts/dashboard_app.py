@@ -74,6 +74,67 @@ if selected_option == "Temperature Trends":
     with st.expander("📍 Temperature Trend in the United States", expanded=True):
         plot_us_temperature_trend(df1)
 
+elif selected_option == "Overview":
+    st.title("🌍 Climate & Disaster Impact - Overview Dashboard")
+    st.markdown("""
+    ### Welcome to the Climate & Disaster Impact Dashboard!  
+    This interactive tool allows you to explore historical climate trends, assess global disaster patterns, and forecast environmental metrics.""")
+
+    # Load the dataset
+    df_overview = df.copy()
+
+    # Ensure correct numeric types
+    df_overview["AvgTemp_Year"] = pd.to_numeric(df_overview["AvgTemp_Year"], errors='coerce')
+    df_overview["Annual CO₂ emissions (per capita)"] = pd.to_numeric(df_overview["Annual CO₂ emissions (per capita)"], errors='coerce')
+    df_overview["Annual precipitation"] = pd.to_numeric(df_overview["Annual precipitation"], errors='coerce')
+    df_overview["Total Events"] = pd.to_numeric(df_overview["Total Events"], errors='coerce')
+
+    # Drop rows with missing values in key stats
+    df_overview = df_overview.dropna(subset=["AvgTemp_Year", "Annual CO₂ emissions (per capita)", "Annual precipitation", "Total Events"])
+
+    # Compute global aggregates
+    avg_temp = round(df_overview["AvgTemp_Year"].mean(), 2)
+    avg_co2 = round(df_overview["Annual CO₂ emissions (per capita)"].mean(), 2)
+    avg_precip = round(df_overview["Annual precipitation"].mean(), 2)
+    total_events = int(df_overview["Total Events"].sum())
+    top_country = df_overview.groupby("Country")["Total Events"].sum().idxmax()
+
+    # KPI Cards Row 1
+    st.markdown("### 🌐 Key Climate Metrics")
+    kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+    kpi1.metric("🌡️ Avg Global Temp (°C)", f"{avg_temp}")
+    kpi2.metric("💨 CO₂ Emissions (per capita)", f"{avg_co2}")
+    kpi3.metric("🌧️ Avg Precipitation (mm)", f"{avg_precip}")
+    kpi4.metric("🌪️ Total Disaster Events", f"{total_events:,}")
+
+    # KPI Cards Row 2
+    st.markdown("### 🌍 Highlights")
+    kpi5, kpi6 = st.columns([2, 2])
+    kpi5.metric("🔥 Most Affected Country", f"{top_country}")
+    kpi6.metric("🗓️ Data Coverage Years", f"{df_overview['Year'].min()} - {df_overview['Year'].max()}")
+    
+    st.markdown("---")
+    st.markdown("""
+    ### 🔍 What You Can Explore:
+    - **🌡️ Temperature Trends**: Understand global warming through long-term patterns.
+    - **📈 Correlations**: Visualize how temperature, CO₂ emissions, and disasters are connected.
+    - **🌪️ Disaster Trends**: Track which countries are most affected by floods, droughts, earthquakes, and more.
+    - **📊 Clustering**: See how countries group based on disaster exposure.
+    - **🧠 Model Insights**: Compare machine learning model performances across tasks.
+    - **🔮 Forecasting**: Predict future climate indicators like temperature, CO₂, and rainfall.
+    - **🚨 Disaster Type Prediction**: Estimate the most likely disaster type for a given country and year.
+
+    ---
+    ### 🗺️ Data Sources:
+    - [Global Temperature Data](https://www.kaggle.com/code/shivankv098/global-temperature-records-1850-2013/input)
+    - [Per capita Co2 emissions](https://ourworldindata.org/explorers/co2?tab=map&facet=none&hideControls=false&Gas+or+Warming=CO%E2%82%82&Accounting=Production-based&Fuel+or+Land+Use+Change=All+fossil+emissions&Count=Per+capita&country=CHN~USA~IND~GBR~OWID_WRL)
+    - [Annual precipitation](https://ourworldindata.org/grapher/average-precipitation-per-year?tab=chart)
+    - [Natural Disasters](https://datasets.omdena.com/dataset/natural-disasters-emergency-events-database---country-profiles)
+    - Merged datasets curated for modeling and visualization.
+
+    ---""")
+
+
 elif selected_option == "Correlations and Distributions":
     st.subheader("📊 Climate Feature Correlations & Distributions")
 
@@ -306,28 +367,29 @@ elif selected_option == "Disaster Type Prediction":
         "South Africa": (-30.5595, 22.9375)
     }
 
-    # Dropdown for country and year
-    country = st.selectbox("Select Country", list(country_coords.keys()))
-    year = st.slider("Select Year", 1990, 2025, step=1)
+    # User selects only country and year
+    country = st.selectbox("🌍 Select Country", list(country_coords.keys()))
+    year = st.slider("📅 Select Year", 1990, 2025, step=1)
 
-    # Dummy climate inputs
-    avg_temp = st.number_input("Average Temperature (°C)", value=24.0)
-    co2 = st.number_input("CO₂ Emissions (per capita)", value=1.8)
-    precip = st.number_input("Annual Precipitation (mm)", value=900.0)
-    cpi = st.number_input("Climate Performance Index (CPI)", value=3.5)
+    # Hidden / backend values (defaults or estimated from average data)
+    avg_temp = 24.0       # or use model-based forecast
+    co2 = 1.8
+    precip = 900.0
+    cpi = 3.5
 
     if st.button("🔍 Predict Disaster Type"):
         lat, lon = country_coords[country]
         country_encoded = le_country.transform([country])[0]
+
         input_features = np.array([[country_encoded, lat, lon, avg_temp, co2, precip, cpi]])
         input_scaled = scaler.transform(input_features)
         pred = model.predict(input_scaled)[0]
         disaster = le_target.inverse_transform([pred])[0]
 
-        st.success(f"🌍 **Country**: {country}")
-        st.info(f"📅 **Year**: {year}")
-        st.warning(f"🚨 **Predicted Disaster Type**: **{disaster}**")
-
+        # Display results
+        st.success(f"🌍 **Country:** {country}")
+        st.info(f"📅 **Year:** {year}")
+        st.warning(f"🚨 **Predicted Disaster Type:** **{disaster}**")
 
 
 else:
