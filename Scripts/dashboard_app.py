@@ -5,6 +5,7 @@ from visualizations import plot_disaster_type_vs_total_affected, plot_disaster_e
 from visualizations import  plot_global_precipitation_trend, plot_top_precip_countries
 import plotly.express as px
 import joblib
+import numpy as np
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
@@ -33,7 +34,7 @@ st.sidebar.title("📊 Dashboard Navigation")
 selected_option = st.sidebar.selectbox(
     "Choose a section:",
     ["Overview", "Temperature Trends", "Correlations and Distributions", "Disasters, Precipitation & CO₂ Trends",
-     "Clustering Results","Model Results","Climate Forecasting"]
+     "Clustering Results","Model Results","Climate Forecasting","Disaster Type Prediction"]
 )
 df = pd.read_csv("../Data/merged_df.csv")
 df1 = pd.read_csv("../Data/df1.csv")
@@ -205,6 +206,55 @@ elif selected_option == "Climate Forecasting":
 
         except Exception as e:
             st.error(f"⚠️ Could not generate forecast: {e}")
+
+elif selected_option == "Disaster Type Prediction":
+    st.subheader("🌪️ Predict Most Likely Disaster Type")
+
+    import joblib
+
+    # Load model and encoders
+    model = joblib.load("Models/disaster_rf_model.pkl")
+    le_country = joblib.load("Models/country_encoder.pkl")
+    le_target = joblib.load("Models/disaster_label_encoder.pkl")
+    scaler = joblib.load("Models/feature_scaler.pkl")
+
+    # Country → Lat/Lon mapping
+    country_coords = {
+        "India": (20.5937, 78.9629),
+        "United States": (37.0902, -95.7129),
+        "Brazil": (-14.2350, -51.9253),
+        "Japan": (36.2048, 138.2529),
+        "Australia": (-25.2744, 133.7751),
+        "Germany": (51.1657, 10.4515),
+        "France": (46.6034, 1.8883),
+        "China": (35.8617, 104.1954),
+        "Canada": (56.1304, -106.3468),
+        "South Africa": (-30.5595, 22.9375)
+    }
+
+    # Dropdown for country and year
+    country = st.selectbox("Select Country", list(country_coords.keys()))
+    year = st.slider("Select Year", 1990, 2025, step=1)
+
+    # Dummy climate inputs
+    avg_temp = st.number_input("Average Temperature (°C)", value=24.0)
+    co2 = st.number_input("CO₂ Emissions (per capita)", value=1.8)
+    precip = st.number_input("Annual Precipitation (mm)", value=900.0)
+    cpi = st.number_input("Climate Performance Index (CPI)", value=3.5)
+
+    if st.button("🔍 Predict Disaster Type"):
+        lat, lon = country_coords[country]
+        country_encoded = le_country.transform([country])[0]
+        input_features = np.array([[country_encoded, lat, lon, avg_temp, co2, precip, cpi]])
+        input_scaled = scaler.transform(input_features)
+        pred = model.predict(input_scaled)[0]
+        disaster = le_target.inverse_transform([pred])[0]
+
+        st.success(f"🌍 **Country**: {country}")
+        st.info(f"📅 **Year**: {year}")
+        st.warning(f"🚨 **Predicted Disaster Type**: **{disaster}**")
+
+
 
 else:
     st.write("Welcome to the Climate & Disaster Impact Dashboard!")
