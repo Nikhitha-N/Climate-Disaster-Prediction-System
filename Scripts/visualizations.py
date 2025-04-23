@@ -13,7 +13,7 @@ def plot_global_temperature_trend(df):
     df["Year"] = pd.to_datetime(df["dt"]).dt.year
     yearly_avg = df.groupby("Year")["AverageTemperature"].mean().reset_index()
 
-    plt.figure(figsize=(12, 5))
+    plt.figure(figsize=(12, 6))
     sns.lineplot(data=yearly_avg, x="Year", y="AverageTemperature")
     plt.title("Global Average Temperature Over Time")
     plt.xlabel("Year")
@@ -23,7 +23,7 @@ def plot_global_temperature_trend(df):
     plt.clf()
 
 def plot_temperature_distribution(df):
-    plt.figure(figsize=(8, 5))
+    plt.figure(figsize=(12, 6))
     sns.histplot(df["AverageTemperature"].dropna(), bins=30, kde=True, color="blue")
     plt.title("Distribution of Average Temperatures")
     plt.xlabel("Temperature (°C)")
@@ -74,6 +74,7 @@ def plot_top_10_hottest_countries(df):
 
     # Plot
     fig, ax = plt.subplots(figsize=(12, 6))
+    plt.figure(figsize=(12, 6))
     sns.barplot(data=top_10, x='Country', y='AverageTemperature', palette='Reds_r', ax=ax)
 
     # Annotate each bar
@@ -115,7 +116,7 @@ def plot_us_temperature_trend(df):
 
 
 def plot_correlation_heatmap(df):
-    plt.figure(figsize=(12, 8))
+    plt.figure(figsize=(12, 6))
     corr = df.select_dtypes(include=["float64", "int64"]).corr()
     sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f", square=True)
     plt.title("Correlation Heatmap")
@@ -123,7 +124,7 @@ def plot_correlation_heatmap(df):
 
 def plot_temp_co2_trend(df):
     yearly_avg = df.groupby("Year")[['AvgTemp_Year', 'Annual CO₂ emissions (per capita)']].mean().reset_index()
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(12, 8))
     sns.lineplot(x='Year', y='AvgTemp_Year', data=yearly_avg, label='Avg Temperature')
     sns.lineplot(x='Year', y='Annual CO₂ emissions (per capita)', data=yearly_avg, label='CO₂ Emissions')
     plt.title("Temperature and CO₂ Trends Over Time")
@@ -139,6 +140,7 @@ def plot_numerical_feature_distributions(df):
     ]
 
     fig, axes = plt.subplots(3, 3, figsize=(16, 12))
+    plt.figure(figsize=(12, 6))
     axes = axes.flatten()
 
     for i, col in enumerate(features):
@@ -150,10 +152,6 @@ def plot_numerical_feature_distributions(df):
 
     plt.tight_layout()
     st.pyplot(fig)
-
-import matplotlib.pyplot as plt
-import seaborn as sns
-import streamlit as st
 
 def plot_disaster_type_vs_total_affected(df):
     if "Disaster Type" in df.columns and "Total Affected" in df.columns:
@@ -172,7 +170,7 @@ def plot_disaster_event_heatmap(df):
         pivot = df.pivot_table(index="Country", columns="Disaster Type",
                                values="Total Events", aggfunc="sum", fill_value=0)
 
-        plt.figure(figsize=(14, 8))
+        plt.figure(figsize=(12,6))
         sns.heatmap(pivot, cmap="YlGnBu", linewidths=0.5)
         plt.title("Disaster Event Count per Country")
         plt.tight_layout()
@@ -180,14 +178,11 @@ def plot_disaster_event_heatmap(df):
     else:
         st.warning("Required columns 'Country', 'Disaster Type', or 'Total Events' are missing in the DataFrame.")
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-import streamlit as st
 
 def plot_co2_vs_temperature(df):
     required_cols = ["Annual CO₂ emissions (per capita)", "AvgTemp_Year", "Country"]
     if all(col in df.columns for col in required_cols):
-        plt.figure(figsize=(8, 6))
+        plt.figure(figsize=(7, 4))
         sns.scatterplot(data=df,
                         x="Annual CO₂ emissions (per capita)",
                         y="AvgTemp_Year",

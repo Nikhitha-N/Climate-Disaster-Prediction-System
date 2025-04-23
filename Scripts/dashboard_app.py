@@ -9,6 +9,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
+st.set_page_config(layout="wide")
 
 def convert_lat_lon(value):
     try:
@@ -31,7 +32,7 @@ merged_df["Longitude_clean"] = merged_df["Longitude"].apply(convert_lat_lon)
 
 # Sidebar for navigation
 st.sidebar.title("📊 Dashboard Navigation")
-selected_option = st.sidebar.selectbox(
+selected_option = st.sidebar.radio(
     "Choose a section:",
     ["Overview", "Temperature Trends", "Correlations and Distributions", "Disasters, Precipitation & CO₂ Trends",
      "Clustering Results","Model Results","Climate Forecasting","Disaster Type Prediction"]
@@ -43,23 +44,98 @@ df3=pd.read_csv('../Data/df3.csv')
 cluster_df = pd.read_csv("../Data/clustering_results.csv")
 # Conditional rendering based on selection
 if selected_option == "Temperature Trends":
-    plot_global_temperature_trend(df1)
-    plot_temperature_distribution(df1)
-    plot_global_temperature_map(df1,2000)
-    plot_top_10_hottest_countries(df1)
-    plot_us_temperature_trend(df1)
+    st.title("🌡️ Global Temperature Trends Dashboard")
+
+    st.markdown("### 📈 Global Trends & Distributions")
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.markdown("**Global Temperature Over Time**")
+        plot_global_temperature_trend(df1)
+
+    with col2:
+        st.markdown("**Distribution of Average Temperatures**")
+        plot_temperature_distribution(df1)
+
+    st.markdown("---")
+    st.markdown("### 🌍 Geographical Temperature Insights")
+
+    col3, col4 = st.columns([1, 1])
+    with col3:
+        st.markdown("**Temperature Map (Year: 2000)**")
+        plot_global_temperature_map(df1, 2000)
+
+    with col4:
+        st.markdown("**Top 10 Hottest Countries**")
+        plot_top_10_hottest_countries(df1)
+
+    st.markdown("---")
+    st.markdown("### 🇺🇸 United States Focus")
+    with st.expander("📍 Temperature Trend in the United States", expanded=True):
+        plot_us_temperature_trend(df1)
+
 elif selected_option == "Correlations and Distributions":
-    plot_correlation_heatmap(df)
-    plot_numerical_feature_distributions(df)
-    plot_disaster_type_vs_total_affected(df)
-    plot_disaster_event_heatmap(df)
-    plot_co2_vs_temperature(df)
+    st.subheader("📊 Climate Feature Correlations & Distributions")
+
+    # 1st Row: Correlation Heatmap + CO₂ vs Temperature
+    st.markdown("### 🔍 Correlation Insights")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("#### 🔗 Correlation Heatmap")
+        plot_correlation_heatmap(df)
+
+    with col2:
+        st.markdown("#### 🌍 CO₂ Emissions vs Temperature")
+        plot_co2_vs_temperature(df)
+
+    st.markdown("---")
+
+    # 2nd Row: Numerical Distributions
+    st.markdown("### 📈 Feature Distributions")
+    plot_numerical_feature_distributions(df)  # full width, optional to split if needed
+
+    st.markdown("---")
+
+    # 3rd Row: Disaster Visualizations
+    st.markdown("### 🌪️ Disaster Impact Patterns")
+    col3, col4 = st.columns(2)
+
+    with col3:
+        st.markdown("#### 📊 Total Affected by Disaster Type")
+        plot_disaster_type_vs_total_affected(df)
+
+    with col4:
+        st.markdown("#### 🔥 Disaster Event Heatmap")
+        plot_disaster_event_heatmap(df)
+
 elif selected_option == "Disasters, Precipitation & CO₂ Trends":
+    # 🧨 Disaster Damage vs 👥 People Affected
+    st.markdown("#### 🧨 Disaster Impact Overview")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("##### 💰 Disaster Damage Over Time")
+        plot_disaster_damage_trend(df2)
+    with col2:
+        st.markdown("##### 👥 Top Affected Countries")
+        plot_top_affected_countries(df2)
+
+    # ☔ Precipitation Trends
+    st.markdown("#### ☔ Precipitation Insights")
+    col3, col4 = st.columns(2)
+    with col3:
+        st.markdown("##### 📉 Global Precipitation Trend")
+        plot_global_precipitation_trend(df3)
+    with col4:
+        st.markdown("##### 🌧️ Top 10 Rainiest Countries")
+        plot_top_precip_countries(df3)
+
+    st.subheader("🌧️ Disasters, Precipitation & CO₂ Dashboard")
+
+    # 🌡️ Temperature vs CO₂ Trend (Full Width)
+    st.markdown("#### 🌍 Temperature vs CO₂ Emissions Trend")
     plot_temp_co2_trend(df)
-    plot_disaster_damage_trend(df2)
-    plot_top_affected_countries(df2)
-    plot_global_precipitation_trend(df3)
-    plot_top_precip_countries(df3)
+
 elif selected_option == "Clustering Results":
     # Load the clustering results
     df = pd.read_csv("../Data/clustering_results.csv")
@@ -209,8 +285,6 @@ elif selected_option == "Climate Forecasting":
 
 elif selected_option == "Disaster Type Prediction":
     st.subheader("🌪️ Predict Most Likely Disaster Type")
-
-    import joblib
 
     # Load model and encoders
     model = joblib.load("Models/disaster_rf_model.pkl")
