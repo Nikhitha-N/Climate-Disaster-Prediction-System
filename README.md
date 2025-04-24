@@ -9,7 +9,7 @@ This project aims to develop an advanced recommender system that predicts climat
 
 **Demonstration Video**
 ```
-video link
+https://drive.google.com/drive/folders/1bCxadXmmcWFAkXnJgUUjhNHLeySwzMdf?usp=sharing
 ```
 ---
 
