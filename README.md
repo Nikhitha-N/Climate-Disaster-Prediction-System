@@ -7,6 +7,12 @@ This project aims to develop an advanced recommender system that predicts climat
 
 ---
 
+**Demonstration Video**
+```
+video link
+```
+---
+
 🚀 **Features**
 
 ✔ Historical Temperature Trends – Retrieves and analyzes past temperature data.
