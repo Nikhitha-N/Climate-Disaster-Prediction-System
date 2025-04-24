@@ -81,9 +81,15 @@ Models Implemented
 - LSTM
 - XGBoost
 
+**Clustering**
+Objective: Clustering the countries based on the similar disaster profiles
 
+Models Implemented
 
- 
+- KMeans
+- Agglomerative Clustering
+- Gaussian Mixture Model (GMM)
+
 ## Accessing the GitHub Repository
 1. Go to the **GitHub repository**:
    ```
@@ -96,6 +102,15 @@ Models Implemented
 3. Navigate to the project directory
 4. Run the ipynb Notebook for analysis in jupyter notebook and vs code
 
+## Accessing the Streamlit Interface
+1. Clone the **GitHub repository** as per instructions given above:
+2. Execute the following commands
+   ```bash
+   Cd Scripts
+   ```
+   ```bash
+   streamlit run dashboard_app.py
+   ```
 
 ## Contributors
 - **Nikhitha Nagalla**
